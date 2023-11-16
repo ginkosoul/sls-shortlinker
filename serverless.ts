@@ -1,6 +1,9 @@
 import type { AWS } from "@serverless/typescript";
 
-import { getLink, hello, setLink } from "@functions/index";
+import { getLink, setLink, sendReminder, receiver } from "@functions/index";
+import dynamoConfig from "@config/dynamo";
+import sqsConfig from "@config/sqs";
+import scheduleRole from "@config/schedulerRole";
 
 const serverlessConfiguration: AWS = {
   service: "sls-shortlinker",
@@ -9,8 +12,12 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: "aws",
     runtime: "nodejs18.x",
+    region: "eu-central-1",
     iam: {
       role: {
+        managedPolicies: [
+          "arn:aws:iam::aws:policy/AmazonEventBridgeSchedulerFullAccess",
+        ],
         statements: [
           {
             Effect: "Allow",
@@ -19,9 +26,29 @@ const serverlessConfiguration: AWS = {
               "dynamodb:GetItem",
               "dynamodb:DeleteItem",
               "dynamodb:Scan",
+              "dynamodb:UpdateItem",
             ],
             Resource:
               "arn:aws:dynamodb:${aws:region}:${aws:accountId}:table/${self:service}-linksTable-${sls:stage}*",
+          },
+          {
+            Effect: "Allow",
+            Action: ["sqs:SendMessage"],
+            Resource: "*",
+          },
+          {
+            Effect: "Allow",
+            Action: [
+              "sts:AssumeRole",
+              "scheduler:*",
+              "iam:PassRole",
+              "lambda:InvokeFunction",
+            ],
+            Resource: [
+              "arn:aws:scheduler:${aws:region}:${aws:accountId}:*",
+              "arn:aws:iam::${aws:accountId}:role/${self:service}-${sls:stage}-${aws:region}-lambdaRole",
+              "*",
+            ],
           },
         ],
       },
@@ -44,32 +71,22 @@ const serverlessConfiguration: AWS = {
           ],
         ],
       },
+      queueUrl:
+        "https://sqs.${aws:region}.amazonaws.com/${aws:accountId}/receiverQueue",
+      eventBridgeBusName: "${self:custom.eventBridgeBusName}",
+      arnSQS: "arn:aws:sqs:${aws:region}:${aws:accountId}:receiverQueue",
+      arnScheduler: "arn:aws:scheduler:::aws-sdk:sqs:sendMessage",
+      arnRole: "arn:aws:iam::${aws:accountId}:role/SchedulerExecutionRole",
     },
   },
   // import the function via paths
-  functions: { hello, getLink, setLink },
+  functions: { sendReminder, getLink, setLink, receiver },
   package: { individually: true },
   resources: {
     Resources: {
-      urlTable: {
-        Type: "AWS::DynamoDB::Table",
-        Properties: {
-          TableName: "${self:service}-linksTable-${sls:stage}",
-          AttributeDefinitions: [
-            {
-              AttributeName: "id",
-              AttributeType: "S",
-            },
-          ],
-          KeySchema: [
-            {
-              AttributeName: "id",
-              KeyType: "HASH",
-            },
-          ],
-          BillingMode: "PAY_PER_REQUEST",
-        },
-      },
+      ...dynamoConfig,
+      ...sqsConfig,
+      ...scheduleRole,
     },
   },
   custom: {
@@ -83,6 +100,7 @@ const serverlessConfiguration: AWS = {
       platform: "node",
       concurrency: 10,
     },
+    eventBridgeBusName: "linksEventBus",
   },
 };
 
