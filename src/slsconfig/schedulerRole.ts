@@ -45,7 +45,6 @@ const sqsResource: AWS["resources"]["Resources"] = {
                   "arn:aws:scheduler:${aws:region}:${aws:accountId}:*",
                   "arn:aws:iam::${aws:accountId}:role/SchedulerExecutionRole",
                   "arn:aws:iam::${aws:accountId}:role/${self:service}-${sls:stage}-${aws:region}-lambdaRole",
-                  "*",
                 ],
               },
             ],

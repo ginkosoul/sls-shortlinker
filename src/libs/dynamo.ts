@@ -9,6 +9,8 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 
 const dynamoClient = new DynamoDBClient({});
+const usersTable = process.env.usersTable as string;
+const urlTable = process.env.urlTable as string;
 
 export const write = async (data: Record<string, any>, tableName: string) => {
   const params: PutCommandInput = {
@@ -42,10 +44,8 @@ export const updateVisitCount = async ({
   id: string;
   visitCount: number;
 }) => {
-  const tableName = process.env.urlTable as string;
-
   const updateCommand = new UpdateCommand({
-    TableName: tableName,
+    TableName: urlTable,
     Key: {
       id,
     },
@@ -68,10 +68,8 @@ export const updateUserToken = async ({
   accessToken: string;
   refreshToken: string;
 }) => {
-  const tableName = process.env.usersTable as string;
-
   const updateCommand = new UpdateCommand({
-    TableName: tableName,
+    TableName: usersTable,
     Key: {
       id,
     },
@@ -88,10 +86,8 @@ export const updateUserToken = async ({
 };
 
 export const getUserByEmail = async (email: string) => {
-  const tableName = process.env.usersTable as string;
-
   const queryCommand = new QueryCommand({
-    TableName: tableName,
+    TableName: usersTable,
     IndexName: "EmailIndex",
     KeyConditionExpression: "email = :email",
     ExpressionAttributeValues: {
@@ -102,3 +98,7 @@ export const getUserByEmail = async (email: string) => {
   const [user] = response.Items;
   return user;
 };
+
+export const getUserById = async (id: string) => await get(id, usersTable);
+
+export const getLinkById = async (id: string) => await get(id, urlTable);

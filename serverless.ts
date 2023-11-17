@@ -7,6 +7,7 @@ import {
   receiver,
   signIn,
   signUp,
+  userVerify,
 } from "@functions/index";
 import dynamoConfig from "@config/dynamo";
 import sqsConfig from "@config/sqs";
@@ -42,6 +43,14 @@ const serverlessConfiguration: AWS = {
             Action: ["sqs:SendMessage"],
             Resource: "*",
           },
+          {
+            Effect: "Allow",
+            Action: ["scheduler:CreateSchedule", "iam:PassRole"],
+            Resource: [
+              "arn:aws:scheduler:${aws:region}:${aws:accountId}:*",
+              "arn:aws:iam::${aws:accountId}:role/SchedulerExecutionRole",
+            ],
+          },
         ],
       },
     },
@@ -59,7 +68,7 @@ const serverlessConfiguration: AWS = {
           "",
           [
             "https://",
-            { Ref: "HttpApi" },
+            { Ref: "ApiGatewayRestApi" },
             ".execute-api.${aws:region}.amazonaws.com",
           ],
         ],
@@ -72,7 +81,15 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { sendReminder, getLink, setLink, receiver, signIn, signUp },
+  functions: {
+    userVerify,
+    sendReminder,
+    getLink,
+    setLink,
+    receiver,
+    signIn,
+    signUp,
+  },
   package: { individually: true },
   resources: {
     Resources: {

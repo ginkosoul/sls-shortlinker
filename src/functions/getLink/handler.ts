@@ -1,19 +1,18 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 
 import { formatJSONResponse } from "@libs/api-gateway";
-import { get, updateVisitCount } from "@libs/dynamo";
+import { getLinkById, updateVisitCount } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
-    const tableName = process.env.urlTable;
     const { code } = event.pathParameters || {};
 
     if (!code) {
       throw new HttpError(400, { message: "missing code in path" });
     }
 
-    const record = await get(code, tableName);
+    const record = await getLinkById(code);
 
     if (!record) {
       throw new HttpError();
@@ -33,9 +32,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       },
     });
   } catch (error) {
-    console.log("error", error);
     return formatJSONResponse({
-      statusCode: 502,
+      statusCode: error.statusCode || 500,
       data: {
         message: error.message,
       },

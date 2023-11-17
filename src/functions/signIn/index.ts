@@ -4,7 +4,7 @@ export default {
   handler: `${handlerPath(__dirname)}/handler.handler`,
   events: [
     {
-      httpApi: {
+      http: {
         path: "/auth/signin",
         method: "post",
       },
