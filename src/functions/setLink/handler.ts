@@ -2,7 +2,7 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 import { nanoid } from "nanoid";
 
 import { formatJSONResponse } from "@libs/api-gateway";
-import { dynamo } from "@libs/dynamo";
+import { write } from "@libs/dynamo";
 import { sendMessage } from "@libs/notification";
 import { scheduleReminder } from "@libs/scheduler";
 
@@ -19,6 +19,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     const data = {
       id: code,
+      createdAt: new Date().toISOString().split(".")[0],
+      userId: "newuser",
       shortUrl,
       originalUrl,
       visitCount: 0,
@@ -30,7 +32,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       id: code,
       scheduleTime: scheduleTime.toISOString().split(".")[0],
     });
-    await dynamo.write(data, tableName);
+    await write(data, tableName);
     const res = await sendMessage({ message: JSON.stringify(data) });
     console.log("Publish sqs result:", res);
 

@@ -1,7 +1,8 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 
 import { formatJSONResponse } from "@libs/api-gateway";
-import { dynamo } from "@libs/dynamo";
+import { get, updateVisitCount } from "@libs/dynamo";
+import { HttpError } from "@libs/httpError";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
@@ -9,14 +10,20 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     const { code } = event.pathParameters || {};
 
     if (!code) {
-      return formatJSONResponse({
-        statusCode: 400,
-        data: { message: "missing code in path" },
-      });
+      throw new HttpError(400, { message: "missing code in path" });
     }
 
-    const record = await dynamo.get(code, tableName);
-    const originalUrl = record.originalUrl;
+    const record = await get(code, tableName);
+
+    if (!record) {
+      throw new HttpError();
+    }
+    await updateVisitCount({
+      id: record.id,
+      visitCount: Number(record.visitCount),
+    });
+
+    const originalUrl = record["originalUrl"];
 
     return formatJSONResponse({
       data: {},
