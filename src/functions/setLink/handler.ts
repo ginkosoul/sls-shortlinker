@@ -2,39 +2,39 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 import { nanoid } from "nanoid";
 
 import { formatJSONResponse } from "@libs/api-gateway";
-import { write } from "@libs/dynamo";
-import { sendMessage } from "@libs/notification";
+import { createLink } from "@libs/dynamo";
 import { scheduleReminder } from "@libs/scheduler";
+import { Link, LinkBody } from "@libs/types";
+import { getScheduledDate } from "@libs/helpers";
+
+const baseUrl = process.env.baseUrl;
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
-    const body = JSON.parse(event.body);
-    const tableName = process.env.urlTable;
-    const baseUrl = process.env.baseUrl;
+    const body: LinkBody = JSON.parse(event.body);
+    const userId = event.requestContext.authorizer?.principalId as string;
 
     const originalUrl = body.url;
-    const code = nanoid(6);
-    const shortUrl = `${baseUrl}/${code}`;
-    const reminderDate = Math.floor(Date.now() / 1000) + 240;
+    const lifetime = body.lifetime;
 
-    const data = {
-      id: code,
+    const id = nanoid(6);
+    const shortUrl = `${baseUrl}/${id}`;
+
+    const link: Link = {
+      id,
       createdAt: new Date().toISOString().split(".")[0],
-      userId: "newuser",
+      userId,
       shortUrl,
       originalUrl,
+      lifetime,
       visitCount: 0,
-      TTL: reminderDate,
     };
-    const scheduleTime = new Date(Date.now() + 5 * 60 * 1000);
+    if (lifetime !== "one-time") {
+      link.TTL = Math.floor(getScheduledDate(lifetime).getTime() / 1000);
+      await scheduleReminder(link);
+    }
 
-    await scheduleReminder({
-      id: code,
-      scheduleTime: scheduleTime.toISOString().split(".")[0],
-    });
-    await write(data, tableName);
-    const res = await sendMessage({ message: JSON.stringify(data) });
-    console.log("Publish sqs result:", res);
+    await createLink(link);
 
     return formatJSONResponse({ data: { shortUrl, originalUrl } });
   } catch (error) {

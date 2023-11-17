@@ -1,4 +1,5 @@
 import { sign, verify } from "jsonwebtoken";
+import { LifeTime } from "./types";
 
 const SECRET = process.env.JWT_SECRET as string;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
@@ -30,4 +31,22 @@ export const validateAccessToken = (token: string) => {
   } catch (error) {
     return null;
   }
+};
+
+export const getScheduledDate = (lifetime: LifeTime) => {
+  const date = new Date();
+  switch (lifetime) {
+    case "1 day":
+      date.setDate(date.getDate() + 1);
+      break;
+    case "3 days":
+      date.setDate(date.getDate() + 3);
+      break;
+    case "7 days":
+      date.setDate(date.getDate() + 7);
+      break;
+    default:
+      break;
+  }
+  return new Date(date);
 };

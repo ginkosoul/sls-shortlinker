@@ -1,5 +1,7 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import {
+  DeleteCommand,
+  DeleteCommandInput,
   GetCommand,
   GetCommandInput,
   PutCommand,
@@ -7,6 +9,7 @@ import {
   QueryCommand,
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
+import { Link, User } from "./types";
 
 const dynamoClient = new DynamoDBClient({});
 const usersTable = process.env.usersTable as string;
@@ -35,6 +38,18 @@ export const get = async (id: string, tableName: string) => {
   const response = await dynamoClient.send(command);
 
   return response.Item;
+};
+
+export const del = async (id: string, tableName: string) => {
+  const params: DeleteCommandInput = {
+    TableName: tableName,
+    Key: {
+      id,
+    },
+  };
+  const command = new DeleteCommand(params);
+
+  await dynamoClient.send(command);
 };
 
 export const updateVisitCount = async ({
@@ -102,3 +117,9 @@ export const getUserByEmail = async (email: string) => {
 export const getUserById = async (id: string) => await get(id, usersTable);
 
 export const getLinkById = async (id: string) => await get(id, urlTable);
+
+export const createUser = async (user: User) => await write(user, usersTable);
+
+export const createLink = async (link: Link) => await write(link, urlTable);
+
+export const deleteLink = async (id: string) => await del(id, urlTable);

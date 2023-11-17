@@ -70,6 +70,7 @@ const serverlessConfiguration: AWS = {
             "https://",
             { Ref: "ApiGatewayRestApi" },
             ".execute-api.${aws:region}.amazonaws.com",
+            "/${sls:stage}",
           ],
         ],
       },

@@ -1,5 +1,5 @@
 import { getUserById } from "@libs/dynamo";
-import { validateAccessToken } from "@libs/jwtHelper";
+import { validateAccessToken } from "@libs/helpers";
 import {
   AuthResponse,
   PolicyDocument,

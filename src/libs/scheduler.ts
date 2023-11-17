@@ -5,31 +5,31 @@ import {
   Target,
 } from "@aws-sdk/client-scheduler";
 import { SendMessageCommandInput } from "@aws-sdk/client-sqs";
+import { LifeTime, Link } from "./types";
+import { getScheduledDate } from "./helpers";
 const client = new SchedulerClient();
 
-// const arn = "arn:aws:scheduler:::aws-sdk:sqs:sendMessage";
-// const role = "sls-shortlinker-dev-eu-central-1-lambdaRole";
 const queueUrl = process.env.queueUrl as string;
+const roleArn = process.env.arnRole as string;
+const arn = process.env.arnScheduler as string;
 
-const scheduleReminder = async ({
-  id,
-  scheduleTime,
-}: {
-  id: string;
-  scheduleTime: string;
-}) => {
+const scheduleReminder = async (link: Link) => {
+  const scheduleTime = getScheduledDate(link.lifetime)
+    .toISOString()
+    .split(".")[0];
+
   const input: SendMessageCommandInput = {
     QueueUrl: queueUrl,
-    MessageBody: JSON.stringify({ id, scheduleTime }),
+    MessageBody: JSON.stringify(link),
   };
   const target: Target = {
-    RoleArn: process.env.arnRole!,
-    Arn: process.env.arnScheduler!,
+    RoleArn: roleArn,
+    Arn: arn,
     Input: JSON.stringify(input),
   };
 
   const schedulerInput: CreateScheduleInput = {
-    Name: id,
+    Name: link.id,
     FlexibleTimeWindow: {
       Mode: "OFF",
     },

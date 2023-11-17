@@ -1,8 +1,10 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 
 import { formatJSONResponse } from "@libs/api-gateway";
-import { getLinkById, updateVisitCount } from "@libs/dynamo";
+import { deleteLink, getLinkById, updateVisitCount } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
+import { sendMessage } from "@libs/notification";
+import { Link } from "@libs/types";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
@@ -12,23 +14,26 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       throw new HttpError(400, { message: "missing code in path" });
     }
 
-    const record = await getLinkById(code);
+    const record = (await getLinkById(code)) as Link;
 
     if (!record) {
       throw new HttpError();
     }
-    await updateVisitCount({
-      id: record.id,
-      visitCount: Number(record.visitCount),
-    });
-
-    const originalUrl = record["originalUrl"];
+    if (record.lifetime === "one-time") {
+      await sendMessage({ message: JSON.stringify(record) });
+      await deleteLink(record.id);
+    } else {
+      await updateVisitCount({
+        id: record.id,
+        visitCount: Number(record.visitCount),
+      });
+    }
 
     return formatJSONResponse({
       data: {},
       statusCode: 301,
       headers: {
-        Location: originalUrl,
+        Location: record.originalUrl,
       },
     });
   } catch (error) {

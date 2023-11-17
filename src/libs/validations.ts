@@ -1,11 +1,7 @@
 import { HttpError } from "./httpError";
+import { AuthBody } from "./types";
 
-export interface User {
-  email: string;
-  password: string;
-}
-
-export const validateUser = (body: User) => {
+export const validateUser = (body: AuthBody) => {
   const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   if (!body.email) {
     return {

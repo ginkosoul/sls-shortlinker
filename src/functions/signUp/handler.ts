@@ -2,18 +2,18 @@ import { APIGatewayEvent } from "aws-lambda";
 import { hash } from "bcryptjs";
 import { nanoid } from "nanoid";
 
-import { User, validateUser } from "@libs/validations";
-import { getUserByEmail, write } from "@libs/dynamo";
+import { validateUser } from "@libs/validations";
+import { createUser, getUserByEmail } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
-import { generateTokens } from "@libs/jwtHelper";
+import { generateTokens } from "@libs/helpers";
 import { formatJSONResponse } from "@libs/api-gateway";
+import { AuthBody, User } from "@libs/types";
 
-const tableName = process.env.usersTable as string;
 const SALT = Number(process.env.HASH_SALT);
 
 export const handler = async (event: APIGatewayEvent) => {
   try {
-    const body: User = JSON.parse(event.body as string);
+    const body: AuthBody = JSON.parse(event.body as string);
     const { email, error, password } = validateUser(body);
 
     if (error) throw error;
@@ -26,16 +26,16 @@ export const handler = async (event: APIGatewayEvent) => {
     const hashPassword = await hash(password, SALT);
     const { accessToken, refreshToken } = generateTokens(id);
 
-    write(
-      {
-        id,
-        email,
-        hashPassword,
-        refreshToken,
-        accessToken,
-      },
-      tableName
-    );
+    const user: User = {
+      id,
+      email,
+      hashPassword,
+      refreshToken,
+      accessToken,
+    };
+
+    await createUser(user);
+
     return formatJSONResponse({
       statusCode: 201,
       data: {
