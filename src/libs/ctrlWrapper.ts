@@ -5,7 +5,7 @@ import {
   APIGatewayProxyResult,
   Callback,
 } from "aws-lambda";
-import { formatJSONResponse } from "./api-gateway";
+import { formatJSONResponse } from "./apiGateway";
 
 export const ctrlWrapper =
   (handler: APIGatewayProxyHandler) =>

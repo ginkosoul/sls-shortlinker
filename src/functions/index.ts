@@ -4,4 +4,6 @@ export { default as sendReminder } from "./sendReminder";
 export { default as receiver } from "./receiver";
 export { default as signIn } from "./signIn";
 export { default as signUp } from "./signUp";
-export { default as userVerify } from "./authorizer";
+export { default as authVerify } from "./authVerify";
+export { default as listLinks } from "./listLinks";
+export { default as deactivateLink } from "./deactivateLink";

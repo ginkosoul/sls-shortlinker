@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 import { nanoid } from "nanoid";
 
-import { formatJSONResponse } from "@libs/api-gateway";
+import { formatJSONResponse } from "@libs/apiGateway";
 import { createLink } from "@libs/dynamo";
 import { scheduleSQSMessage } from "@libs/scheduler";
 import { Link, LinkBody } from "@libs/types";

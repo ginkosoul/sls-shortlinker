@@ -1,4 +1,4 @@
-import { handlerPath } from "@libs/handler-resolver";
+import { handlerPath } from "@libs/handlerResolver";
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.handler`,
@@ -7,6 +7,7 @@ export default {
       http: {
         path: "/auth/signin",
         method: "post",
+        cors: true,
       },
     },
   ],

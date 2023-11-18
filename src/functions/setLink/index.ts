@@ -1,5 +1,5 @@
-import { handlerPath } from "@libs/handler-resolver";
-import { authorizer } from "@functions/authorizer";
+import { handlerPath } from "@libs/handlerResolver";
+import { authorizer } from "@functions/authVerify";
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.handler`,
@@ -9,6 +9,7 @@ export default {
         path: "/",
         method: "post",
         authorizer,
+        cors: true,
       },
     },
   ],

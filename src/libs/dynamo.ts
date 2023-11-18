@@ -122,7 +122,7 @@ export const getUsersByEmail = async (email: string) =>
   await query("email", email, "EmailIndex", usersTable);
 
 export const getLinksByUserId = async (userId: string) =>
-  await query("userId", userId, "UserIndex", usersTable);
+  await query("userId", userId, "UserIndex", urlTable);
 
 export const getUserById = async (id: string) => await get(id, usersTable);
 

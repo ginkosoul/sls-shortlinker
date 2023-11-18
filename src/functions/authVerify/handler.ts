@@ -13,6 +13,8 @@ type PolicyData = {
   resource: string;
 };
 
+const authArn = process.env.authArn as string;
+
 export const handler = async (
   event: APIGatewayTokenAuthorizerEvent,
   _,
@@ -20,11 +22,14 @@ export const handler = async (
 ) => {
   const [bearer, token] = event.authorizationToken.split(" ");
   const data: PolicyData = {
-    resource: event.methodArn,
+    resource: authArn,
   };
 
   if (bearer === "Bearer" && token) {
+    console.log("Entering authorization function:", JSON.stringify(event));
+    console.log("AuthArn:", authArn);
     const userData = validateAccessToken(token);
+    console.log(JSON.stringify(userData));
     if (userData) {
       const user = await getUserById(userData.id);
       if (user.accessToken === token) {

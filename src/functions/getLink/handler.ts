@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 
-import { formatJSONResponse } from "@libs/api-gateway";
+import { formatJSONResponse } from "@libs/apiGateway";
 import { deleteLink, getLinkById, updateVisitCount } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 import { sendMessage } from "@libs/notification";

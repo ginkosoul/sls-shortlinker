@@ -6,7 +6,7 @@ import { validateUser } from "@libs/validations";
 import { createUser, getUsersByEmail } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 import { generateTokens } from "@libs/helpers";
-import { formatJSONResponse } from "@libs/api-gateway";
+import { formatJSONResponse } from "@libs/apiGateway";
 import { AuthBody, User } from "@libs/types";
 
 const SALT = Number(process.env.HASH_SALT);

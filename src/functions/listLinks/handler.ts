@@ -1,4 +1,4 @@
-import { formatJSONResponse } from "@libs/api-gateway";
+import { formatJSONResponse } from "@libs/apiGateway";
 import { getLinksByUserId } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 import { Link } from "@libs/types";

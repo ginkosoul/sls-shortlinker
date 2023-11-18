@@ -5,7 +5,7 @@ import { validateUser } from "@libs/validations";
 import { getUsersByEmail, updateUserToken } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 import { generateTokens } from "@libs/helpers";
-import { formatJSONResponse } from "@libs/api-gateway";
+import { formatJSONResponse } from "@libs/apiGateway";
 import { AuthBody } from "@libs/types";
 
 export const handler = async (event: APIGatewayEvent) => {
@@ -34,7 +34,7 @@ export const handler = async (event: APIGatewayEvent) => {
       statusCode: 200,
       data: {
         refreshToken: upateData.refreshToken,
-        accessToken: upateData.refreshToken,
+        accessToken: upateData.accessToken,
       },
     });
   } catch (error) {

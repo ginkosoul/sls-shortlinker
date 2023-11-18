@@ -1,4 +1,5 @@
-import { handlerPath } from "@libs/handler-resolver";
+import { handlerPath } from "@libs/handlerResolver";
+import { authorizer } from "@functions/authVerify";
 
 export default {
   handler: `${handlerPath(__dirname)}/handler.handler`,
@@ -7,6 +8,8 @@ export default {
       http: {
         path: "/{id}",
         method: "delete",
+        authorizer,
+        cors: true,
       },
     },
   ],

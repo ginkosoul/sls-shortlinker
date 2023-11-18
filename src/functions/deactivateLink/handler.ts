@@ -1,4 +1,4 @@
-import { formatJSONResponse } from "@libs/api-gateway";
+import { formatJSONResponse } from "@libs/apiGateway";
 import { deleteLink, getLinkById } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 import { sendMessage } from "@libs/notification";
@@ -12,6 +12,8 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     const link = (await getLinkById(id)) as Link;
 
     if (link.userId !== userId) {
+      console.log("UserId unmuched:", link.userId, userId);
+      console.log("Link data", JSON.stringify(link));
       throw new HttpError(403, {
         message: "You don't have permission to delete this Link.",
       });

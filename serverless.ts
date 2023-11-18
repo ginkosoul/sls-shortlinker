@@ -7,7 +7,9 @@ import {
   receiver,
   signIn,
   signUp,
-  userVerify,
+  authVerify,
+  deactivateLink,
+  listLinks,
 } from "@functions/index";
 import dynamoConfig from "@config/dynamo";
 import sqsConfig from "@config/sqs";
@@ -69,8 +71,7 @@ const serverlessConfiguration: AWS = {
           [
             "https://",
             { Ref: "ApiGatewayRestApi" },
-            ".execute-api.${aws:region}.amazonaws.com",
-            "/${sls:stage}",
+            ".execute-api.${aws:region}.amazonaws.com/${sls:stage}",
           ],
         ],
       },
@@ -79,17 +80,29 @@ const serverlessConfiguration: AWS = {
       arnSQS: "arn:aws:sqs:${aws:region}:${aws:accountId}:receiverQueue",
       arnScheduler: "arn:aws:scheduler:::aws-sdk:sqs:sendMessage",
       arnRole: "arn:aws:iam::${aws:accountId}:role/SchedulerExecutionRole",
+      authArn: {
+        "Fn::Join": [
+          "",
+          [
+            "arn:aws:execute-api:${aws:region}:${aws:accountId}:",
+            { Ref: "ApiGatewayRestApi" },
+            "/dev*",
+          ],
+        ],
+      },
     },
   },
   // import the function via paths
   functions: {
-    userVerify,
+    authVerify,
     sendReminder,
     getLink,
     setLink,
     receiver,
     signIn,
     signUp,
+    listLinks,
+    deactivateLink,
   },
   package: { individually: true },
   resources: {
