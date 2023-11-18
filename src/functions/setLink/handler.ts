@@ -3,7 +3,7 @@ import { nanoid } from "nanoid";
 
 import { formatJSONResponse } from "@libs/api-gateway";
 import { createLink } from "@libs/dynamo";
-import { scheduleReminder } from "@libs/scheduler";
+import { scheduleSQSMessage } from "@libs/scheduler";
 import { Link, LinkBody } from "@libs/types";
 import { getScheduledDate } from "@libs/helpers";
 
@@ -31,7 +31,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
     };
     if (lifetime !== "one-time") {
       link.TTL = Math.floor(getScheduledDate(lifetime).getTime() / 1000);
-      await scheduleReminder(link);
+      await scheduleSQSMessage(link);
     }
 
     await createLink(link);

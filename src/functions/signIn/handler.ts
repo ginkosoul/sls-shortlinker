@@ -2,7 +2,7 @@ import { APIGatewayEvent } from "aws-lambda";
 import { compare } from "bcryptjs";
 
 import { validateUser } from "@libs/validations";
-import { getUserByEmail, updateUserToken } from "@libs/dynamo";
+import { getUsersByEmail, updateUserToken } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 import { generateTokens } from "@libs/helpers";
 import { formatJSONResponse } from "@libs/api-gateway";
@@ -11,21 +11,22 @@ import { AuthBody } from "@libs/types";
 export const handler = async (event: APIGatewayEvent) => {
   try {
     const body: AuthBody = JSON.parse(event.body as string);
-    const { email, error, password } = validateUser(body);
 
-    if (error) throw error;
+    validateUser(body);
 
-    const record = await getUserByEmail(email);
+    const { email, password } = body;
 
-    if (!record)
+    const [user] = await getUsersByEmail(email);
+
+    if (!user)
       throw new HttpError(409, { message: "Email or password incorect" });
 
-    const isValid = await compare(password, record.hashPassword);
+    const isValid = await compare(password, user.hashPassword);
 
     if (!isValid)
       throw new HttpError(409, { message: "Email or password incorect" });
 
-    const upateData = { ...generateTokens(record.id), id: record.id };
+    const upateData = { ...generateTokens(user.id), id: user.id };
 
     await updateUserToken(upateData);
 

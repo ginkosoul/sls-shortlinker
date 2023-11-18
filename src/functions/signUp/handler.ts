@@ -3,7 +3,7 @@ import { hash } from "bcryptjs";
 import { nanoid } from "nanoid";
 
 import { validateUser } from "@libs/validations";
-import { createUser, getUserByEmail } from "@libs/dynamo";
+import { createUser, getUsersByEmail } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 import { generateTokens } from "@libs/helpers";
 import { formatJSONResponse } from "@libs/api-gateway";
@@ -14,13 +14,16 @@ const SALT = Number(process.env.HASH_SALT);
 export const handler = async (event: APIGatewayEvent) => {
   try {
     const body: AuthBody = JSON.parse(event.body as string);
-    const { email, error, password } = validateUser(body);
 
-    if (error) throw error;
+    validateUser(body);
 
-    const record = await getUserByEmail(email);
+    const { email, password } = body;
 
-    if (record) throw new HttpError(409, { message: "Email already in use" });
+    const records = await getUsersByEmail(email);
+
+    if (records.length) {
+      throw new HttpError(409, { message: "Email already in use" });
+    }
 
     const id = nanoid();
     const hashPassword = await hash(password, SALT);

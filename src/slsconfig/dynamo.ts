@@ -10,6 +10,10 @@ const dynamoResources: AWS["resources"]["Resources"] = {
           AttributeName: "id",
           AttributeType: "S",
         },
+        {
+          AttributeName: "userId",
+          AttributeType: "S",
+        },
       ],
       KeySchema: [
         {
@@ -17,7 +21,18 @@ const dynamoResources: AWS["resources"]["Resources"] = {
           KeyType: "HASH",
         },
       ],
-      BillingMode: "PAY_PER_REQUEST",
+      GlobalSecondaryIndexes: [
+        {
+          IndexName: "UserIndex",
+          KeySchema: [
+            {
+              AttributeName: "userId",
+              KeyType: "HASH",
+            },
+          ],
+          Projection: { ProjectionType: "ALL" },
+        },
+      ],
       TimeToLiveSpecification: {
         AttributeName: "TTL",
         Enabled: true,
@@ -25,6 +40,7 @@ const dynamoResources: AWS["resources"]["Resources"] = {
       StreamSpecification: {
         StreamViewType: "OLD_IMAGE",
       },
+      BillingMode: "PAY_PER_REQUEST",
     },
   },
   usersTable: {

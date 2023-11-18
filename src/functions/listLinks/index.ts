@@ -5,7 +5,7 @@ export default {
   events: [
     {
       http: {
-        path: "/{id}",
+        path: "/listmylinks",
         method: "get",
       },
     },

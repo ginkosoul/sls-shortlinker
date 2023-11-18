@@ -71,7 +71,7 @@ export const sendSMS = async ({
   return response.MessageId;
 };
 
-export const sendMessage = async ({ message }: { message: string }) => {
+export const sendMessage = async (message: string) => {
   const queueUrl = process.env.queueUrl as string;
 
   const input: SendMessageCommandInput = {

@@ -52,6 +52,24 @@ export const del = async (id: string, tableName: string) => {
   await dynamoClient.send(command);
 };
 
+export const query = async (
+  key: string,
+  value: string,
+  indexName: string,
+  tableName: string
+) => {
+  const queryCommand = new QueryCommand({
+    TableName: tableName,
+    IndexName: indexName,
+    KeyConditionExpression: `${key} = :${key}`,
+    ExpressionAttributeValues: {
+      [`:${key}`]: value,
+    },
+  });
+  const response = await dynamoClient.send(queryCommand);
+  return response.Items;
+};
+
 export const updateVisitCount = async ({
   id,
   visitCount,
@@ -100,19 +118,11 @@ export const updateUserToken = async ({
   return response;
 };
 
-export const getUserByEmail = async (email: string) => {
-  const queryCommand = new QueryCommand({
-    TableName: usersTable,
-    IndexName: "EmailIndex",
-    KeyConditionExpression: "email = :email",
-    ExpressionAttributeValues: {
-      ":email": email,
-    },
-  });
-  const response = await dynamoClient.send(queryCommand);
-  const [user] = response.Items;
-  return user;
-};
+export const getUsersByEmail = async (email: string) =>
+  await query("email", email, "EmailIndex", usersTable);
+
+export const getLinksByUserId = async (userId: string) =>
+  await query("userId", userId, "UserIndex", usersTable);
 
 export const getUserById = async (id: string) => await get(id, usersTable);
 

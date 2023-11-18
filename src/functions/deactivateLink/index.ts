@@ -6,7 +6,7 @@ export default {
     {
       http: {
         path: "/{id}",
-        method: "get",
+        method: "delete",
       },
     },
   ],

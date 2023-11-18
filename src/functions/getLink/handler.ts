@@ -8,19 +8,21 @@ import { Link } from "@libs/types";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
-    const { code } = event.pathParameters || {};
+    const { id } = event.pathParameters || {};
 
-    if (!code) {
-      throw new HttpError(400, { message: "missing code in path" });
+    if (!id) {
+      throw new HttpError(400, { message: "missing id in path" });
     }
 
-    const record = (await getLinkById(code)) as Link;
+    const record = (await getLinkById(id)) as Link;
 
     if (!record) {
       throw new HttpError();
     }
     if (record.lifetime === "one-time") {
-      await sendMessage({ message: JSON.stringify(record) });
+      await sendMessage(
+        JSON.stringify({ ...record, message: "One-time Link deactivated" })
+      );
       await deleteLink(record.id);
     } else {
       await updateVisitCount({
