@@ -1,7 +1,7 @@
 import type { AWS } from "@serverless/typescript";
 
-const sqsResource: AWS["resources"]["Resources"] = {
-  SchedulerExecutionRole: {
+export const scheduleResource: AWS["resources"]["Resources"] = {
+  schedulerExecutionRole: {
     Type: "AWS::IAM::Role",
     Properties: {
       RoleName: "SchedulerExecutionRole",
@@ -53,6 +53,10 @@ const sqsResource: AWS["resources"]["Resources"] = {
       ],
     },
   },
+  scheduleGruop: {
+    Type: "AWS::Scheduler::ScheduleGroup",
+    Properties: {
+      Name: "${self:service}-Gruop",
+    },
+  },
 };
-
-export default sqsResource;

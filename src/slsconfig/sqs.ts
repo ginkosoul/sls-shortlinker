@@ -1,6 +1,6 @@
 import type { AWS } from "@serverless/typescript";
 
-const sqsResource: AWS["resources"]["Resources"] = {
+export const sqsResource: AWS["resources"]["Resources"] = {
   receiverQueue: {
     Type: "AWS::SQS::Queue",
     Properties: {
@@ -8,5 +8,3 @@ const sqsResource: AWS["resources"]["Resources"] = {
     },
   },
 };
-
-export default sqsResource;

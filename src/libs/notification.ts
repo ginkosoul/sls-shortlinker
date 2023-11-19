@@ -36,7 +36,7 @@ export const sendEmail = async ({
       },
       Subject: {
         Charset: "UTF-8",
-        Data: "Your Reminder!",
+        Data: "Shortlink Notification",
       },
     },
   };
@@ -45,7 +45,7 @@ export const sendEmail = async ({
 
   const response = await sesClient.send(command);
 
-  return response.MessageId;
+  return response;
 };
 
 export const verifyEmailIdentity = async (email: string) => {

@@ -23,10 +23,11 @@ export const handler: SQSHandler = async (event) => {
       if (action === "SEND_MESSAGE") {
         const user = (await getUserById(link.userId)) as User;
         if (user.email) {
-          await sendEmail({
+          const res = await sendEmail({
             email: user.email,
             reminderMessage: generateEmailMessage(link, entity),
           });
+          console.log("Email responce: ", res);
         }
       }
     }

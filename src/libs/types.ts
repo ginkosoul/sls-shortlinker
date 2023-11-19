@@ -38,3 +38,9 @@ export type SQSMessageBody = {
   entity: Entity;
   message?: string;
 };
+
+export type PolicyData = {
+  principalId?: string;
+  allow?: boolean;
+  resource: string;
+};

@@ -14,7 +14,7 @@ const client = new SchedulerClient();
 const queueUrl = process.env.queueUrl as string;
 const roleArn = process.env.arnRole as string;
 const arn = process.env.arnScheduler as string;
-const groupName = "default";
+const groupName = process.env.scheduleGroupName as string;
 
 const scheduleSQSMessage = async (link: Link) => {
   const scheduleTime = getScheduledDate(link.lifetime)

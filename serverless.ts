@@ -3,7 +3,6 @@ import type { AWS } from "@serverless/typescript";
 import {
   getLink,
   setLink,
-  sendReminder,
   receiver,
   signIn,
   signUp,
@@ -11,9 +10,8 @@ import {
   deactivateLink,
   listLinks,
 } from "@functions/index";
-import dynamoConfig from "@config/dynamo";
-import sqsConfig from "@config/sqs";
-import scheduleRole from "@config/schedulerRole";
+
+import { dynamoResources, scheduleResource, sqsResource } from "@config/index";
 
 const serverlessConfiguration: AWS = {
   service: "sls-shortlinker",
@@ -44,6 +42,11 @@ const serverlessConfiguration: AWS = {
             Effect: "Allow",
             Action: ["sqs:SendMessage"],
             Resource: "*",
+          },
+          {
+            Effect: "Allow",
+            Action: ["ses:SendEmail"],
+            Resource: "arn:aws:ses:${aws:region}:${aws:accountId}:identity/*",
           },
           {
             Effect: "Allow",
@@ -90,15 +93,14 @@ const serverlessConfiguration: AWS = {
           ],
         ],
       },
+      scheduleGroupName: "${self:service}-Gruop",
     },
   },
-  // import the function via paths
   functions: {
     authVerify,
-    sendReminder,
+    receiver,
     getLink,
     setLink,
-    receiver,
     signIn,
     signUp,
     listLinks,
@@ -107,9 +109,9 @@ const serverlessConfiguration: AWS = {
   package: { individually: true },
   resources: {
     Resources: {
-      ...dynamoConfig,
-      ...sqsConfig,
-      ...scheduleRole,
+      ...dynamoResources,
+      ...sqsResource,
+      ...scheduleResource,
     },
   },
   custom: {
@@ -118,7 +120,7 @@ const serverlessConfiguration: AWS = {
       minify: false,
       sourcemap: true,
       exclude: ["aws-sdk"],
-      target: "node14",
+      target: "node18",
       define: { "require.resolve": undefined },
       platform: "node",
       concurrency: 10,

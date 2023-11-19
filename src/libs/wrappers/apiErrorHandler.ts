@@ -5,9 +5,9 @@ import {
   APIGatewayProxyResult,
   Callback,
 } from "aws-lambda";
-import { formatJSONResponse } from "./apiGateway";
+import { formatJSONResponse } from "../apiGateway";
 
-export const ctrlWrapper =
+export const errorHadlerWrapper =
   (handler: APIGatewayProxyHandler) =>
   async (
     event: APIGatewayProxyEvent,
@@ -19,9 +19,7 @@ export const ctrlWrapper =
     } catch (error) {
       return formatJSONResponse({
         statusCode: error.statusCode || 500,
-        data: {
-          message: error.message,
-        },
+        data: error.message,
       });
     }
   };

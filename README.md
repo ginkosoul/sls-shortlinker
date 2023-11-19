@@ -64,18 +64,46 @@ The project code base is mainly located within the `src` folder. This folder is 
 .
 ├── src
 │   ├── functions               # Lambda configuration and source code folder
-│   │   ├── hello
-│   │   │   ├── handler.ts      # `Hello` lambda source code
-│   │   │   ├── index.ts        # `Hello` lambda Serverless configuration
-│   │   │   ├── mock.json       # `Hello` lambda input parameter, if any, for local invocation
-│   │   │   └── schema.ts       # `Hello` lambda input event JSON-Schema
+│   │   ├── authVerify
+│   │   │   ├── handler.ts      # `authVerify` lambda source code
+│   │   │   └── index.ts        # `authVerify` lambda Serverless configuration
+│   │   ├── deactivateLink
+│   │   │   ├── handler.ts      # `deactivateLink` lambda source code
+│   │   │   └── index.ts        # `deactivateLink` lambda Serverless configuration
+│   │   ├── getLink
+│   │   │   ├── handler.ts      # `getLink` lambda source code
+│   │   │   └── index.ts        # `getLink` lambda Serverless configuration
+│   │   ├── listLinks
+│   │   │   ├── handler.ts      # `listLinks` lambda source code
+│   │   │   └── index.ts        # `listLinks` lambda Serverless configuration
+│   │   ├── receiver
+│   │   │   ├── handler.ts      # `receiver` lambda source code
+│   │   │   └── index.ts        # `receiver` lambda Serverless configuration
+│   │   ├── setLink
+│   │   │   ├── handler.ts      # `setLink` lambda source code
+│   │   │   └── index.ts        # `setLink` lambda Serverless configuration
+│   │   ├── signIn
+│   │   │   ├── handler.ts      # `signIn` lambda source code
+│   │   │   └── index.ts        # `signIn` lambda Serverless configuration
+│   │   ├── signUp
+│   │   │   ├── handler.ts      # `signUp` lambda source code
+│   │   │   └── index.ts        # `signUp` lambda Serverless configuration
 │   │   │
 │   │   └── index.ts            # Import/export of all lambda configurations
 │   │
-│   └── libs                    # Lambda shared code
-│       └── apiGateway.ts       # API Gateway specific helpers
-│       └── handlerResolver.ts  # Sharable library for resolving lambda handlers
-│       └── lambda.ts           # Lambda middleware
+│   ├── libs                    # Lambda configuration and source code folder
+│   │   ├── authVerify
+│   │   │   ├── handler.ts      # `authVerify` lambda source code
+│   │   │   └── index.ts        # `authVerify` lambda Serverless configuration
+│   │   ├── apiGateway.ts       # API Gateway specific helpers
+│   │   ├── handlerResolver.ts  # Sharable library for resolving lambda handlers
+│   │   └── lambda.ts           # Lambda middleware
+│   │
+│   └── sls                     # Serverless configuration
+│       ├── dynamo.ts           # DynamoDB table configuration
+│       ├── schedule.ts         # Sheduler Group and SchedukerRole configuration
+│       ├── sqs.ts              # SQSQueue configuration
+│       └── index.ts            # Import/export of all Resorces configurations
 │
 ├── package.json
 ├── serverless.ts               # Serverless service file

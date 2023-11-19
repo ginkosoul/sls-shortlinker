@@ -1,10 +1,11 @@
 import type { AWS } from "@serverless/typescript";
 
-const dynamoResources: AWS["resources"]["Resources"] = {
+export const dynamoResources: AWS["resources"]["Resources"] = {
   urlTable: {
-    Type: "AWS::DynamoDB::Table",
+    Type: "AWS::DynamoDB::GlobalTable",
     Properties: {
       TableName: "${self:service}-linksTable-${sls:stage}",
+      Replicas: [{ Region: "${aws:region}" }],
       AttributeDefinitions: [
         {
           AttributeName: "id",
@@ -44,9 +45,10 @@ const dynamoResources: AWS["resources"]["Resources"] = {
     },
   },
   usersTable: {
-    Type: "AWS::DynamoDB::Table",
+    Type: "AWS::DynamoDB::GlobalTable",
     Properties: {
       TableName: "${self:service}-usersTable-${sls:stage}",
+      Replicas: [{ Region: "${aws:region}" }],
       AttributeDefinitions: [
         {
           AttributeName: "id",
@@ -79,5 +81,3 @@ const dynamoResources: AWS["resources"]["Resources"] = {
     },
   },
 };
-
-export default dynamoResources;

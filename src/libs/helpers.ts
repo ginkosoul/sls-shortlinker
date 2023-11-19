@@ -3,6 +3,8 @@ import { Entity, LifeTime, Link } from "./types";
 
 const SECRET = process.env.JWT_SECRET as string;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
+const ACCESS_TTL = "60m";
+const REFRESH_TTL = "14d";
 
 interface UserData {
   id: string;
@@ -11,11 +13,11 @@ interface UserData {
 export const generateTokens = (id: string) => {
   const user: UserData = { id };
   const accessToken = sign(user, SECRET, {
-    expiresIn: "60m",
+    expiresIn: ACCESS_TTL,
   });
 
   const refreshToken = sign(user, REFRESH_SECRET, {
-    expiresIn: "30d",
+    expiresIn: REFRESH_TTL,
   });
 
   return {

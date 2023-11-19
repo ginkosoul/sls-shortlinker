@@ -22,8 +22,7 @@ export const validateUser = (body: AuthBody) => {
 };
 
 export const validateLinkBody = (body: LinkBody) => {
-  const linkRegex =
-    /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+  const linkRegex = /^(https?|ftp):\/\/[^\s\/$.?#].[^\s]*$/;
   const lifetimeRegex = /(?:^|(?<= ))(one-time|1 day|3 days|7 days)(?:(?= )|$)/;
   if (!body.url) {
     throw new HttpError(400, { message: "Missing field: url" });

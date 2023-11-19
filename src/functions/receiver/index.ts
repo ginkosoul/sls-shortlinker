@@ -6,6 +6,7 @@ export default {
     {
       sqs: {
         arn: { "Fn::GetAtt": ["receiverQueue", "Arn"] },
+        batchSize: 10,
       },
     },
   ],
