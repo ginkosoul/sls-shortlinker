@@ -1,12 +1,34 @@
-import { SQSHandler, SQSMessageAttributes } from "aws-lambda";
+import { deleteLink, getUserById } from "@libs/dynamo";
+import { generateEmailMessage } from "@libs/helpers";
+import { sendEmail, sqsSendEmailNotification } from "@libs/notification";
+import { removeScheduledSQSMessage } from "@libs/scheduler";
+import { SQSMessageBody, User } from "@libs/types";
+import { SQSHandler } from "aws-lambda";
 
 export const handler: SQSHandler = async (event) => {
   try {
     for (const record of event.Records) {
-      const messageAttributes: SQSMessageAttributes = record.messageAttributes;
-      console.log("Message Attributtes -->  ", messageAttributes);
-      console.log("Message Body -->  ", record.body);
-      // Do something
+      console.log("Recocrd -->  ", record);
+      const { action, link, entity } = JSON.parse(
+        record.body
+      ) as SQSMessageBody;
+
+      if (action === "DEACTIVATE") {
+        await deleteLink(link.id);
+        await sqsSendEmailNotification(link, entity);
+        if (entity === "USER" && link.lifetime !== "one-time") {
+          await removeScheduledSQSMessage(link.id);
+        }
+      }
+      if (action === "SEND_MESSAGE") {
+        const user = (await getUserById(link.userId)) as User;
+        if (user.email) {
+          await sendEmail({
+            email: user.email,
+            reminderMessage: generateEmailMessage(link, entity),
+          });
+        }
+      }
     }
   } catch (error) {
     console.log(error);

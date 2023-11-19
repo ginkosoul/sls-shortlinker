@@ -1,5 +1,5 @@
 import { sign, verify } from "jsonwebtoken";
-import { LifeTime } from "./types";
+import { Entity, LifeTime, Link } from "./types";
 
 const SECRET = process.env.JWT_SECRET as string;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
@@ -50,3 +50,22 @@ export const getScheduledDate = (lifetime: LifeTime) => {
   }
   return new Date(date);
 };
+
+export const formatLinkList = (links: Link[]) =>
+  links.map(
+    ({ id, createdAt, lifetime, originalUrl, shortUrl, visitCount }) => ({
+      id,
+      createdAt,
+      lifetime,
+      originalUrl,
+      shortUrl,
+      visitCount,
+    })
+  );
+
+export const getScheduledNameById = (id: string): string => `deactivate-${id}`;
+
+export const generateEmailMessage = (link: Link, entity: Entity): string =>
+  entity === "SCHEDULER"
+    ? `${link.shortUrl} lifetime period expired and link was deactivated. Original URL:${link.originalUrl}`
+    : `${link.shortUrl} deactivated by user's request. Original URL:${link.originalUrl}`;

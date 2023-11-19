@@ -1,8 +1,10 @@
+import { APIGatewayProxyEvent } from "aws-lambda";
+
 import { formatJSONResponse } from "@libs/apiGateway";
 import { getLinksByUserId } from "@libs/dynamo";
+import { formatLinkList } from "@libs/helpers";
 import { HttpError } from "@libs/httpError";
 import { Link } from "@libs/types";
-import { APIGatewayProxyEvent } from "aws-lambda";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
@@ -15,16 +17,7 @@ export const handler = async (event: APIGatewayProxyEvent) => {
 
     return formatJSONResponse({
       data: {
-        links: links.map(
-          ({ id, createdAt, lifetime, originalUrl, shortUrl, visitCount }) => ({
-            id,
-            createdAt,
-            lifetime,
-            originalUrl,
-            shortUrl,
-            visitCount,
-          })
-        ),
+        links: formatLinkList(links),
       },
     });
   } catch (error) {

@@ -28,3 +28,13 @@ export type Link = {
   lifetime: LifeTime;
   TTL?: number;
 };
+
+export type Action = "DEACTIVATE" | "SEND_MESSAGE";
+export type Entity = "USER" | "SCHEDULER";
+
+export type SQSMessageBody = {
+  link: Link;
+  action: Action;
+  entity: Entity;
+  message?: string;
+};

@@ -2,20 +2,17 @@ import {
   SESClient,
   SendEmailCommand,
   SendEmailCommandInput,
+  VerifyEmailIdentityCommand,
 } from "@aws-sdk/client-ses";
-import {
-  SNSClient,
-  PublishCommand,
-  PublishCommandInput,
-} from "@aws-sdk/client-sns";
 import {
   SQSClient,
   SendMessageCommand,
   SendMessageCommandInput,
 } from "@aws-sdk/client-sqs";
 
+import { Entity, Link, SQSMessageBody } from "./types";
+
 const sesClient = new SESClient({});
-const snsClient = new SNSClient({});
 const sqsClient = new SQSClient({});
 
 export const sendEmail = async ({
@@ -51,27 +48,22 @@ export const sendEmail = async ({
   return response.MessageId;
 };
 
-// ----------------------------------------
-export const sendSMS = async ({
-  phoneNumber,
-  reminderMessage,
-}: {
-  phoneNumber: string;
-  reminderMessage: string;
-}) => {
-  const params: PublishCommandInput = {
-    Message: reminderMessage,
-    PhoneNumber: phoneNumber,
-  };
-
-  const command = new PublishCommand(params);
-
-  const response = await snsClient.send(command);
-
-  return response.MessageId;
+export const verifyEmailIdentity = async (email: string) => {
+  try {
+    const command = new VerifyEmailIdentityCommand({
+      EmailAddress: email,
+    });
+    await sesClient.send(command);
+    return { statusCode: 200 };
+  } catch (error) {
+    console.log(error);
+    return { statusCode: 500 };
+  }
 };
 
-export const sendMessage = async (message: string) => {
+// ----------------------------------------
+
+export const sendMessageSQS = async (message: string) => {
   const queueUrl = process.env.queueUrl as string;
 
   const input: SendMessageCommandInput = {
@@ -80,5 +72,28 @@ export const sendMessage = async (message: string) => {
   };
   const command = new SendMessageCommand(input);
 
-  await sqsClient.send(command);
+  const res = await sqsClient.send(command);
+  if (res.$metadata.httpStatusCode !== 200) {
+    throw new Error("failed to add task to SQS");
+  }
+};
+
+export const sqsDeactivateLink = async (link: Link, entity?: Entity) => {
+  const message: SQSMessageBody = {
+    link,
+    action: "DEACTIVATE",
+    entity: entity || "USER",
+  };
+
+  await sendMessageSQS(JSON.stringify(message));
+};
+
+export const sqsSendEmailNotification = async (link: Link, entity: Entity) => {
+  const sqsMessage: SQSMessageBody = {
+    link,
+    action: "SEND_MESSAGE",
+    entity: entity,
+  };
+
+  await sendMessageSQS(JSON.stringify(sqsMessage));
 };

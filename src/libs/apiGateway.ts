@@ -1,18 +1,18 @@
 export const formatJSONResponse = ({
   statusCode = 200,
   data,
-  headers,
+  headers = {},
 }: {
   statusCode?: number;
-  data?: Record<string, unknown>;
+  data?: Record<string, unknown> | string;
   headers?: Record<string, string>;
 }) => {
+  if (data && typeof data !== "string") {
+    headers["Content-Type"] = "application/json";
+  }
   return {
     statusCode,
     body: JSON.stringify(data),
-    headers: {
-      "content-type": "application/json",
-      ...headers,
-    },
+    headers,
   };
 };

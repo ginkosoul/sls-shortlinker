@@ -70,13 +70,7 @@ export const query = async (
   return response.Items;
 };
 
-export const updateVisitCount = async ({
-  id,
-  visitCount,
-}: {
-  id: string;
-  visitCount: number;
-}) => {
+export const updateVisitCount = async ({ id, visitCount }: Link) => {
   const updateCommand = new UpdateCommand({
     TableName: urlTable,
     Key: {

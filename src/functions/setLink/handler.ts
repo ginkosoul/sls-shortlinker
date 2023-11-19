@@ -6,13 +6,15 @@ import { createLink } from "@libs/dynamo";
 import { scheduleSQSMessage } from "@libs/scheduler";
 import { Link, LinkBody } from "@libs/types";
 import { getScheduledDate } from "@libs/helpers";
+import { validateLinkBody } from "@libs/validations";
 
 const baseUrl = process.env.baseUrl;
 
 export const handler = async (event: APIGatewayProxyEvent) => {
   try {
-    const body: LinkBody = JSON.parse(event.body);
     const userId = event.requestContext.authorizer?.principalId as string;
+    const body: LinkBody = JSON.parse(event.body);
+    validateLinkBody(body);
 
     const originalUrl = body.url;
     const lifetime = body.lifetime;

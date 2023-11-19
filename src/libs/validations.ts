@@ -1,5 +1,5 @@
 import { HttpError } from "./httpError";
-import { AuthBody } from "./types";
+import { AuthBody, LinkBody } from "./types";
 
 export const validateUser = (body: AuthBody) => {
   const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
@@ -17,6 +17,27 @@ export const validateUser = (body: AuthBody) => {
     throw new HttpError(400, {
       message:
         "Password minimum eight characters, at least one uppercase letter, one lowercase letter and one number",
+    });
+  }
+};
+
+export const validateLinkBody = (body: LinkBody) => {
+  const linkRegex =
+    /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi;
+  const lifetimeRegex = /(?:^|(?<= ))(one-time|1 day|3 days|7 days)(?:(?= )|$)/;
+  if (!body.url) {
+    throw new HttpError(400, { message: "Missing field: url" });
+  }
+  if (!body.url.match(linkRegex)) {
+    throw new HttpError(400, { message: "Invalid URL" });
+  }
+  if (!body.lifetime) {
+    throw new HttpError(400, { message: "Missing field: lifetime" });
+  }
+  if (!body.lifetime.match(lifetimeRegex)) {
+    throw new HttpError(400, {
+      message:
+        "Invalid lifetime: must be one of: ['one-time', '1 day', '3 days', '7 days']",
     });
   }
 };

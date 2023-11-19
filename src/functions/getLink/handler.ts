@@ -1,9 +1,9 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 
 import { formatJSONResponse } from "@libs/apiGateway";
-import { deleteLink, getLinkById, updateVisitCount } from "@libs/dynamo";
+import { getLinkById, updateVisitCount } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
-import { sendMessage } from "@libs/notification";
+import { sqsDeactivateLink } from "@libs/notification";
 import { Link } from "@libs/types";
 
 export const handler = async (event: APIGatewayProxyEvent) => {
@@ -20,19 +20,12 @@ export const handler = async (event: APIGatewayProxyEvent) => {
       throw new HttpError();
     }
     if (record.lifetime === "one-time") {
-      await sendMessage(
-        JSON.stringify({ ...record, message: "One-time Link deactivated" })
-      );
-      await deleteLink(record.id);
+      await sqsDeactivateLink(record);
     } else {
-      await updateVisitCount({
-        id: record.id,
-        visitCount: Number(record.visitCount),
-      });
+      await updateVisitCount(record);
     }
 
     return formatJSONResponse({
-      data: {},
       statusCode: 301,
       headers: {
         Location: record.originalUrl,
