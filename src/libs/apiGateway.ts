@@ -4,7 +4,7 @@ export const formatJSONResponse = ({
   headers = {},
 }: {
   statusCode?: number;
-  data?: Record<string, unknown> | string;
+  data?: Record<string, unknown> | Array<unknown> | string;
   headers?: Record<string, string>;
 }) => {
   if (data && typeof data !== "string") {

@@ -52,8 +52,15 @@ const serverlessConfiguration: AWS = {
             Effect: "Allow",
             Action: ["scheduler:CreateSchedule", "iam:PassRole"],
             Resource: [
-              "arn:aws:scheduler:${aws:region}:${aws:accountId}:*",
+              "arn:aws:scheduler:${aws:region}:${aws:accountId}:schedule/${self:service}-Gruop*",
               "arn:aws:iam::${aws:accountId}:role/SchedulerExecutionRole",
+            ],
+          },
+          {
+            Effect: "Allow",
+            Action: ["scheduler:DeleteSchedule"],
+            Resource: [
+              "arn:aws:scheduler:${aws:region}:${aws:accountId}:schedule/${self:service}-Gruop*",
             ],
           },
         ],

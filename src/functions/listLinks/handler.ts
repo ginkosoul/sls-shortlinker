@@ -17,9 +17,7 @@ const _handler = async (event: APIGatewayProxyEvent) => {
   }
 
   return formatJSONResponse({
-    data: {
-      links: formatLinkList(links),
-    },
+    data: formatLinkList(links),
   });
 };
 
