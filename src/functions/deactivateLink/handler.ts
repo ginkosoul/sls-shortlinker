@@ -2,7 +2,7 @@ import { formatJSONResponse } from "@libs/apiGateway";
 import { getLinkById } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 import { sqsDeactivateLink } from "@libs/notification";
-import { Link } from "@libs/types";
+import { Link } from "src/types/types";
 import { errorHadlerWrapper } from "@libs/wrappers/apiErrorHandler";
 import { APIGatewayProxyEvent } from "aws-lambda";
 

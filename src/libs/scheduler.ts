@@ -6,7 +6,7 @@ import {
   Target,
 } from "@aws-sdk/client-scheduler";
 import { SendMessageCommandInput } from "@aws-sdk/client-sqs";
-import { Link, SQSMessageBody } from "./types";
+import { Link, SQSMessageBody } from "../types/types";
 import { getScheduledDate, getScheduledNameById } from "./helpers";
 
 const client = new SchedulerClient();

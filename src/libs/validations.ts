@@ -1,5 +1,5 @@
+import { AuthBody, LinkBody } from "src/types/apiTypes";
 import { HttpError } from "./httpError";
-import { AuthBody, LinkBody } from "./types";
 
 export const validateUser = (body: AuthBody) => {
   const emailRegex = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;

@@ -10,6 +10,12 @@ export default {
         method: "delete",
         authorizer,
         cors: true,
+        responseData: {
+          200: "Deactivate successfully",
+          404: "Link not found",
+          403: "Unauthorized",
+          502: "server error",
+        },
       },
     },
   ],

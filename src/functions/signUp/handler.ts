@@ -2,13 +2,15 @@ import { APIGatewayEvent } from "aws-lambda";
 import { hash } from "bcryptjs";
 import { nanoid } from "nanoid";
 
+import { errorHadlerWrapper } from "@libs/wrappers/apiErrorHandler";
+import { formatJSONResponse } from "@libs/apiGateway";
+import { HttpError } from "@libs/httpError";
 import { validateUser } from "@libs/validations";
 import { createUser, getUsersByEmail } from "@libs/dynamo";
-import { HttpError } from "@libs/httpError";
 import { generateTokens } from "@libs/helpers";
-import { formatJSONResponse } from "@libs/apiGateway";
-import { AuthBody, User } from "@libs/types";
-import { errorHadlerWrapper } from "@libs/wrappers/apiErrorHandler";
+
+import { User } from "src/types/types";
+import { AuthBody, AuthResponse } from "src/types/apiTypes";
 
 const SALT = Number(process.env.HASH_SALT);
 
@@ -39,14 +41,16 @@ const _handler = async (event: APIGatewayEvent) => {
 
   await createUser(user);
 
+  const response: AuthResponse = {
+    id,
+    email,
+    refreshToken,
+    accessToken,
+  };
+
   return formatJSONResponse({
     statusCode: 201,
-    data: {
-      id,
-      email,
-      refreshToken,
-      accessToken,
-    },
+    data: response,
   });
 };
 

@@ -6,7 +6,7 @@ import { HttpError } from "@libs/httpError";
 import { getLinkById, updateVisitCount } from "@libs/dynamo";
 import { sqsDeactivateLink } from "@libs/notification";
 
-import { Link } from "@libs/types";
+import { Link } from "src/types/types";
 
 const _handler = async (event: APIGatewayProxyEvent) => {
   const { id } = event.pathParameters || {};

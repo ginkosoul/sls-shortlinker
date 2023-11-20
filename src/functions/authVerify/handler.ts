@@ -1,7 +1,7 @@
 import { getUserById } from "@libs/dynamo";
 import { validateAccessToken } from "@libs/helpers";
 import { generatePolicy } from "@libs/helpers/generatePolicy";
-import { PolicyData } from "@libs/types";
+import { PolicyData } from "src/types/types";
 import {
   APIGatewayTokenAuthorizerEvent,
   APIGatewayAuthorizerCallback,

@@ -1,4 +1,4 @@
-import { PolicyData } from "@libs/types";
+import { PolicyData } from "src/types/types";
 import { AuthResponse, PolicyDocument } from "aws-lambda";
 
 export const generatePolicy = ({

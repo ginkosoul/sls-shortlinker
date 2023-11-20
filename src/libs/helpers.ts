@@ -1,5 +1,6 @@
 import { sign, verify } from "jsonwebtoken";
-import { Entity, LifeTime, Link } from "./types";
+import { Entity, Link } from "../types/types";
+import { LifeTime, LinksList } from "src/types/apiTypes";
 
 const SECRET = process.env.JWT_SECRET as string;
 const REFRESH_SECRET = process.env.JWT_REFRESH_SECRET as string;
@@ -53,7 +54,7 @@ export const getScheduledDate = (lifetime: LifeTime) => {
   return new Date(date);
 };
 
-export const formatLinkList = (links: Link[]) =>
+export const formatLinkList = (links: Link[]): LinksList =>
   links.map(
     ({ id, createdAt, lifetime, originalUrl, shortUrl, visitCount }) => ({
       id,

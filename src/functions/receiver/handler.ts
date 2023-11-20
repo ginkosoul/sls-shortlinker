@@ -2,7 +2,7 @@ import { deleteLink, getUserById } from "@libs/dynamo";
 import { generateEmailMessage } from "@libs/helpers";
 import { sendEmail, sqsSendEmailNotification } from "@libs/notification";
 import { removeScheduledSQSMessage } from "@libs/scheduler";
-import { SQSMessageBody, User } from "@libs/types";
+import { SQSMessageBody, User } from "src/types/types";
 import { SQSHandler } from "aws-lambda";
 
 export const handler: SQSHandler = async (event) => {

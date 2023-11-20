@@ -16,7 +16,11 @@ import { dynamoResources, scheduleResource, sqsResource } from "@config/index";
 const serverlessConfiguration: AWS = {
   service: "sls-shortlinker",
   frameworkVersion: "3",
-  plugins: ["serverless-esbuild", "serverless-dotenv-plugin"],
+  plugins: [
+    "serverless-auto-swagger",
+    "serverless-esbuild",
+    "serverless-dotenv-plugin",
+  ],
   provider: {
     name: "aws",
     runtime: "nodejs18.x",
@@ -131,6 +135,11 @@ const serverlessConfiguration: AWS = {
       define: { "require.resolve": undefined },
       platform: "node",
       concurrency: 10,
+    },
+    autoswagger: {
+      typefiles: ["./src/types/apiTypes.ts"],
+      apiKeyHeaders: ["Authorization"],
+      basePath: "/${sls:stage}",
     },
   },
 };

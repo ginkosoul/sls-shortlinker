@@ -8,6 +8,11 @@ export default {
         path: "/{id}",
         method: "get",
         cors: true,
+        responseData: {
+          301: "Redirecting to the original Location",
+          404: "Link Not Found",
+          502: "server error",
+        },
       },
     },
   ],

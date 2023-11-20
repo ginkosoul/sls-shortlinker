@@ -18,7 +18,7 @@ export const errorHadlerWrapper =
       return await handler(event, context, callback);
     } catch (error) {
       return formatJSONResponse({
-        statusCode: error.statusCode || 500,
+        statusCode: error.statusCode || 502,
         data: error.message,
       });
     }

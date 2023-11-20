@@ -9,7 +9,7 @@ import {
   QueryCommand,
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { Link, User } from "./types";
+import { Link, User } from "../types/types";
 
 const dynamoClient = new DynamoDBClient({});
 const usersTable = process.env.usersTable as string;

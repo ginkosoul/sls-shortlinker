@@ -8,7 +8,8 @@ import { getUsersByEmail, updateUserToken } from "@libs/dynamo";
 import { HttpError } from "@libs/httpError";
 import { generateTokens } from "@libs/helpers";
 
-import { AuthBody } from "@libs/types";
+import { AuthBody, AuthResponse } from "src/types/apiTypes";
+import { User } from "src/types/types";
 
 const _handler = async (event: APIGatewayEvent) => {
   const body: AuthBody = JSON.parse(event.body as string);
@@ -17,7 +18,7 @@ const _handler = async (event: APIGatewayEvent) => {
 
   const { email, password } = body;
 
-  const [user] = await getUsersByEmail(email);
+  const [user] = (await getUsersByEmail(email)) as User[];
 
   if (!user)
     throw new HttpError(409, { message: "Email or password incorect" });
@@ -31,12 +32,16 @@ const _handler = async (event: APIGatewayEvent) => {
 
   await updateUserToken(upateData);
 
+  const response: AuthResponse = {
+    id: user.id,
+    email: user.email,
+    refreshToken: upateData.refreshToken,
+    accessToken: upateData.accessToken,
+  };
+
   return formatJSONResponse({
     statusCode: 200,
-    data: {
-      refreshToken: upateData.refreshToken,
-      accessToken: upateData.accessToken,
-    },
+    data: response,
   });
 };
 

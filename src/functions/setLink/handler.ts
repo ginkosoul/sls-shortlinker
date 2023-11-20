@@ -8,7 +8,8 @@ import { validateLinkBody } from "@libs/validations";
 import { getScheduledDate } from "@libs/helpers";
 import { createLink } from "@libs/dynamo";
 
-import { Link, LinkBody } from "@libs/types";
+import { Link } from "src/types/types";
+import { LinkBody, LinkResponse } from "src/types/apiTypes";
 
 const baseUrl = process.env.baseUrl;
 
@@ -39,7 +40,9 @@ const _handler = async (event: APIGatewayProxyEvent) => {
 
   await createLink(link);
 
-  return formatJSONResponse({ data: { shortUrl, originalUrl } });
+  const data: LinkResponse = { shortUrl, originalUrl };
+
+  return formatJSONResponse({ data, statusCode: 201 });
 };
 
 export const handler = errorHadlerWrapper(_handler);

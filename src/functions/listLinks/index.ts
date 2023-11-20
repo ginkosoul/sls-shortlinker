@@ -10,6 +10,14 @@ export default {
         method: "get",
         authorizer,
         cors: true,
+        responseData: {
+          200: {
+            description: "Lists user's links",
+            bodyType: "LinksList",
+          },
+          404: "Links not found",
+          502: "server error",
+        },
       },
     },
   ],

@@ -6,7 +6,7 @@ import { getLinksByUserId } from "@libs/dynamo";
 import { formatLinkList } from "@libs/helpers";
 import { HttpError } from "@libs/httpError";
 
-import { Link } from "@libs/types";
+import { Link } from "src/types/types";
 
 const _handler = async (event: APIGatewayProxyEvent) => {
   const userId = event.requestContext.authorizer?.principalId as string;

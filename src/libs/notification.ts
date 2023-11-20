@@ -10,7 +10,7 @@ import {
   SendMessageCommandInput,
 } from "@aws-sdk/client-sqs";
 
-import { Entity, Link, SQSMessageBody } from "./types";
+import { Entity, Link, SQSMessageBody } from "../types/types";
 
 const sesClient = new SESClient({});
 const sqsClient = new SQSClient({});
