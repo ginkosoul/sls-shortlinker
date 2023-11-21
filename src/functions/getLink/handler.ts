@@ -1,12 +1,15 @@
 import { APIGatewayProxyEvent } from "aws-lambda";
 
 import { errorHadlerWrapper } from "@libs/wrappers/apiErrorHandler";
-import { formatJSONResponse } from "@libs/apiGateway";
-import { HttpError } from "@libs/httpError";
-import { getLinkById, updateVisitCount } from "@libs/dynamo";
-import { sqsDeactivateLink } from "@libs/notification";
+import {
+  formatJSONResponse,
+  HttpError,
+  getLinkById,
+  updateVisitCount,
+  sqsDeactivateLink,
+} from "@libs/helpers";
 
-import { Link } from "src/types/types";
+import { Link } from "@t/types";
 
 const _handler = async (event: APIGatewayProxyEvent) => {
   const { id } = event.pathParameters || {};

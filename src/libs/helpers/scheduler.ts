@@ -6,8 +6,8 @@ import {
   Target,
 } from "@aws-sdk/client-scheduler";
 import { SendMessageCommandInput } from "@aws-sdk/client-sqs";
-import { Link, SQSMessageBody } from "../types/types";
-import { getScheduledDate, getScheduledNameById } from "./helpers";
+import { Link, SQSMessageBody } from "../../types/types";
+import { getScheduledDate, getScheduledNameById } from "./formatHelpers";
 
 const client = new SchedulerClient();
 
@@ -49,15 +49,7 @@ const scheduleSQSMessage = async (link: Link) => {
   };
 
   const command = new CreateScheduleCommand(schedulerInput);
-  const response = await client.send(command);
-
-  if (response.$metadata.httpStatusCode == 200) {
-    return { status: "Success" };
-  } else {
-    return {
-      status: "Error",
-    };
-  }
+  await client.send(command);
 };
 
 const removeScheduledSQSMessage = async (id: string) => {
@@ -65,16 +57,7 @@ const removeScheduledSQSMessage = async (id: string) => {
     Name: getScheduledNameById(id),
     GroupName: groupName,
   });
-
-  const response = await client.send(command);
-
-  if (response.$metadata.httpStatusCode == 200) {
-    return { status: "Success" };
-  } else {
-    return {
-      status: "Error",
-    };
-  }
+  await client.send(command);
 };
 
 export { scheduleSQSMessage, removeScheduledSQSMessage };

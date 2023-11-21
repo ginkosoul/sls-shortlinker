@@ -10,7 +10,9 @@ import {
   SendMessageCommandInput,
 } from "@aws-sdk/client-sqs";
 
-import { Entity, Link, SQSMessageBody } from "../types/types";
+import { Entity, Link, SQSMessageBody } from "../../types/types";
+
+const SENDER_EMAIL = process.env.SENDER_EMAIL;
 
 const sesClient = new SESClient({});
 const sqsClient = new SQSClient({});
@@ -23,7 +25,7 @@ export const sendEmail = async ({
   reminderMessage: string;
 }) => {
   const params: SendEmailCommandInput = {
-    Source: "ginkosoul@gmail.com",
+    Source: SENDER_EMAIL,
     Destination: {
       ToAddresses: [email],
     },
@@ -54,10 +56,8 @@ export const verifyEmailIdentity = async (email: string) => {
       EmailAddress: email,
     });
     await sesClient.send(command);
-    return { statusCode: 200 };
   } catch (error) {
     console.log(error);
-    return { statusCode: 500 };
   }
 };
 

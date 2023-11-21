@@ -2,14 +2,17 @@ import { APIGatewayProxyEvent } from "aws-lambda";
 import { nanoid } from "nanoid";
 
 import { errorHadlerWrapper } from "@libs/wrappers/apiErrorHandler";
-import { formatJSONResponse } from "@libs/apiGateway";
-import { scheduleSQSMessage } from "@libs/scheduler";
-import { validateLinkBody } from "@libs/validations";
-import { getScheduledDate } from "@libs/helpers";
-import { createLink } from "@libs/dynamo";
 
-import { Link } from "src/types/types";
-import { LinkBody, LinkResponse } from "src/types/apiTypes";
+import {
+  formatJSONResponse,
+  scheduleSQSMessage,
+  validateLinkBody,
+  getScheduledDate,
+  createLink,
+} from "@libs/helpers";
+
+import { Link } from "@t/types";
+import { LinkBody, LinkResponse } from "@t/apiTypes";
 
 const baseUrl = process.env.baseUrl;
 

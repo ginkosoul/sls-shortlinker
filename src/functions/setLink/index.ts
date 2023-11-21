@@ -1,4 +1,4 @@
-import { handlerPath } from "@libs/handlerResolver";
+import { handlerPath } from "@libs/helpers/handlerResolver";
 import { authorizer } from "@functions/authVerify";
 
 export default {

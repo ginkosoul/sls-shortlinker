@@ -5,7 +5,7 @@
       "@functions/*": ["src/functions/*"],
       "@libs/*": ["src/libs/*"],
       "@config/*": ["src/slsconfig/*"],
-      "@types/*": ["src/types/*"]
+      "@t/*": ["src/types/*"]
     }
   }
 }

@@ -1,11 +1,15 @@
-import { getUserById } from "@libs/dynamo";
-import { validateAccessToken } from "@libs/helpers";
-import { generatePolicy } from "@libs/helpers/generatePolicy";
-import { PolicyData } from "src/types/types";
 import {
   APIGatewayTokenAuthorizerEvent,
   APIGatewayAuthorizerCallback,
 } from "aws-lambda";
+
+import {
+  getUserById,
+  validateAccessToken,
+  generatePolicy,
+} from "@libs/helpers";
+
+import { PolicyData } from "@t/types";
 
 const authArn = process.env.authArn as string;
 

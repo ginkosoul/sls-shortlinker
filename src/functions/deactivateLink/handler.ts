@@ -1,10 +1,14 @@
-import { formatJSONResponse } from "@libs/apiGateway";
-import { getLinkById } from "@libs/dynamo";
-import { HttpError } from "@libs/httpError";
-import { sqsDeactivateLink } from "@libs/notification";
-import { Link } from "src/types/types";
-import { errorHadlerWrapper } from "@libs/wrappers/apiErrorHandler";
 import { APIGatewayProxyEvent } from "aws-lambda";
+
+import { errorHadlerWrapper } from "@libs/wrappers/apiErrorHandler";
+import {
+  formatJSONResponse,
+  getLinkById,
+  HttpError,
+  sqsDeactivateLink,
+} from "@libs/helpers";
+
+import { Link } from "src/types/types";
 
 const _handler = async (event: APIGatewayProxyEvent) => {
   const userId = event.requestContext.authorizer?.principalId as string;

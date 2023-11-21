@@ -3,14 +3,18 @@ import { hash } from "bcryptjs";
 import { nanoid } from "nanoid";
 
 import { errorHadlerWrapper } from "@libs/wrappers/apiErrorHandler";
-import { formatJSONResponse } from "@libs/apiGateway";
-import { HttpError } from "@libs/httpError";
-import { validateUser } from "@libs/validations";
-import { createUser, getUsersByEmail } from "@libs/dynamo";
-import { generateTokens } from "@libs/helpers";
 
-import { User } from "src/types/types";
-import { AuthBody, AuthResponse } from "src/types/apiTypes";
+import {
+  HttpError,
+  formatJSONResponse,
+  validateUser,
+  createUser,
+  getUsersByEmail,
+  generateTokens,
+} from "@libs/helpers";
+
+import { User } from "@t/types";
+import { AuthBody, AuthResponse } from "@t/apiTypes";
 
 const SALT = Number(process.env.HASH_SALT);
 

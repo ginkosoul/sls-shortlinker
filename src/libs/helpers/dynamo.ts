@@ -9,13 +9,13 @@ import {
   QueryCommand,
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { Link, User } from "../types/types";
+import { Link, User } from "../../types/types";
 
 const dynamoClient = new DynamoDBClient({});
 const usersTable = process.env.usersTable as string;
 const urlTable = process.env.urlTable as string;
 
-export const write = async (data: Record<string, any>, tableName: string) => {
+const write = async (data: Record<string, any>, tableName: string) => {
   const params: PutCommandInput = {
     TableName: tableName,
     Item: data,
@@ -26,7 +26,7 @@ export const write = async (data: Record<string, any>, tableName: string) => {
 
   return data;
 };
-export const get = async (id: string, tableName: string) => {
+const get = async (id: string, tableName: string) => {
   const params: GetCommandInput = {
     TableName: tableName,
     Key: {
@@ -40,7 +40,7 @@ export const get = async (id: string, tableName: string) => {
   return response.Item;
 };
 
-export const del = async (id: string, tableName: string) => {
+const del = async (id: string, tableName: string) => {
   const params: DeleteCommandInput = {
     TableName: tableName,
     Key: {
@@ -52,7 +52,7 @@ export const del = async (id: string, tableName: string) => {
   await dynamoClient.send(command);
 };
 
-export const query = async (
+const query = async (
   key: string,
   value: string,
   indexName: string,

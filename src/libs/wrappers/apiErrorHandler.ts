@@ -5,7 +5,7 @@ import {
   APIGatewayProxyResult,
   Callback,
 } from "aws-lambda";
-import { formatJSONResponse } from "../apiGateway";
+import { formatJSONResponse } from "../helpers/apiGateway";
 
 export const errorHadlerWrapper =
   (handler: APIGatewayProxyHandler) =>

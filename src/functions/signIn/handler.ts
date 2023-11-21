@@ -2,14 +2,18 @@ import { APIGatewayEvent } from "aws-lambda";
 import { compare } from "bcryptjs";
 
 import { errorHadlerWrapper } from "@libs/wrappers/apiErrorHandler";
-import { formatJSONResponse } from "@libs/apiGateway";
-import { validateUser } from "@libs/validations";
-import { getUsersByEmail, updateUserToken } from "@libs/dynamo";
-import { HttpError } from "@libs/httpError";
-import { generateTokens } from "@libs/helpers";
 
-import { AuthBody, AuthResponse } from "src/types/apiTypes";
-import { User } from "src/types/types";
+import {
+  generateTokens,
+  HttpError,
+  getUsersByEmail,
+  updateUserToken,
+  validateUser,
+  formatJSONResponse,
+} from "@libs/helpers";
+
+import { AuthBody, AuthResponse } from "@t/apiTypes";
+import { User } from "@t/types";
 
 const _handler = async (event: APIGatewayEvent) => {
   const body: AuthBody = JSON.parse(event.body as string);
